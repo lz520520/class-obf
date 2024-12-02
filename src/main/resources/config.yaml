@@ -1,0 +1,42 @@
+!!me.n1ar4.clazz.obfuscator.config.BaseConfig
+# 日志级别
+logLevel: info
+
+# 全局方法黑名单
+methodBlackList:
+  - "test"
+
+# 混淆字符组合
+obfuscateChars:
+  - "i"
+  - "l"
+  - "L"
+  - "1"
+  - "I"
+
+# 是否开启删除编译信息
+enableDeleteCompileInfo: true
+# 是否开启字段混淆
+enableFieldName: true
+# 是否开启字段隐藏
+enableHideField: false
+# 是否开启方法隐藏
+enableHideMethod: false
+# 是否开启方法名混淆
+enableMethodName: true
+# 是否开启方法参数名混淆
+enableParamName: true
+# 是否对数字进行异或混淆
+enableXOR: true
+
+# 是否启用全局字符串提取混淆
+enableAdvanceString: true
+# 全局提取字符串的变量名可以自定义
+advanceStringName: ME_N1AR4_CLAZZ_OBF_PROJECT
+
+# 是否开启花指令混淆
+enableJunk: true
+# 花指令混淆级别 1-5
+junkLevel: 3
+# 一个类中花指令最多数量
+maxJunkOneClass: 1000
