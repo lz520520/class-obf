@@ -27,7 +27,7 @@ jobs:
         run: |
           mvn -B clean package -DskipTests --file pom.xml
           mv target/class-obf-${{ env.VERSION }}-jar-with-dependencies.jar class-obf-${{ env.VERSION }}.jar
-        working-directory: jar-analyzer
+        working-directory: class-obf
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
