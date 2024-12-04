@@ -7,6 +7,10 @@
 ![](https://img.shields.io/github/downloads/jar-analyzer/class-obf/total)
 ![](https://img.shields.io/github/v/release/jar-analyzer/class-obf)
 
+![](https://github.com/jar-analyzer/class-obf/workflows/maven%20check/badge.svg)
+![](https://github.com/jar-analyzer/class-obf/workflows/leak%20check/badge.svg)
+![](https://github.com/jar-analyzer/class-obf/workflows/truffle%20check/badge.svg)
+
 `class-obf` 项目全称 `Class Obfuscator` 项目，专门用来混淆单个 `Class` 文件
 
 示例图：混淆前 -> 混淆后
@@ -66,7 +70,7 @@ public class Test {
 }
 ```
 
-你可以随意搭配配置文件，得到以下集中混淆结果
+你可以随意搭配配置文件，得到以下几种混淆结果
 
 效果一（默认配置）
 
@@ -149,6 +153,6 @@ Thanks to JetBrains for providing me with a free license, which is a strong supp
 
 <div align="center">
 
-<img src="https://api.star-history.com/svg?repos=jar-analyzer/class-obfr&type=Date" width="600" height="400" alt="Star History Chart" valign="middle">
+<img src="https://api.star-history.com/svg?repos=jar-analyzer/class-obf&type=Date" width="600" height="400" alt="Star History Chart" valign="middle">
 
 </div>
