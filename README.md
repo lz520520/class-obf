@@ -141,6 +141,32 @@ junkLevel: 3
 maxJunkOneClass: 1000
 ```
 
+## API
+
+你可以使用代码方式调用（参考 `test` 目录的 `TestQuick/TestAPI` 文件）
+
+最快速使用（使用默认配置输入文件返回 `base64` 字节码）
+
+```java
+String data = ClassObf.quickRun("Test.class");
+System.out.println(data);
+```
+
+自行进行配置进阶写法
+
+```java
+BaseConfig config = new BaseConfig();
+// 省略代码 自行设置 config 文件
+
+ClassObf classObf = new ClassObf(config);
+// 支持三种重载：输入文件字符串，输入文件 PATH 对象，输入 byte[] 数据
+Result result = classObf.run("Test.class");
+if (result.getMessage().equals(Result.SUCCESS)) {
+    // result.getData() 即可得到混淆后的 byte[] 字节码
+    System.out.println(Base64.getEncoder().encodeToString(result.getData()));
+}
+```
+
 ## Thanks
 
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.svg" alt="IntelliJ IDEA logo.">
