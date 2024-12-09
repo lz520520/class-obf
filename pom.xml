@@ -16,7 +16,6 @@
         <asm.version>9.7.1</asm.version>
         <jcommander.version>1.82</jcommander.version>
         <snake.yaml.version>2.3</snake.yaml.version>
-        <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/versions-maven-plugin -->
         <maven.versions.version>2.18.0</maven.versions.version>
         <!-- Java Compiler Version -->
         <maven.compiler.source>8</maven.compiler.source>
@@ -53,18 +52,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>

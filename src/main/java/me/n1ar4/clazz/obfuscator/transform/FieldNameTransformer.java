@@ -22,7 +22,7 @@ public class FieldNameTransformer {
         }
         try {
             ClassReader classReader = new ClassReader(Files.readAllBytes(newClassPath));
-            ClassWriter classWriter = new ClassWriter(classReader,Const.WriterASMOptions);
+            ClassWriter classWriter = new ClassWriter(classReader, Const.WriterASMOptions);
             FieldNameChanger changer = new FieldNameChanger(classWriter);
             classReader.accept(changer, Const.ReaderASMOptions);
             Files.delete(newClassPath);
