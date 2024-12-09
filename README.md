@@ -107,11 +107,13 @@ public class Test {
     </repository>
 </repositories>
 <!-- 引入项目 -->
-<dependency>
-    <groupId>com.github.jar-analyzer</groupId>
-    <artifactId>class-obf</artifactId>
-    <version>1.1.0</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>com.github.jar-analyzer</groupId>
+        <artifactId>class-obf</artifactId>
+        <version>bdb076042c</version>
+    </dependency>
+</dependencies>
 ```
 
 最快速使用（使用默认配置输入文件返回 `base64` 字节码）
