@@ -21,6 +21,10 @@
 
 ![](img/004.png)
 
+本项目已深度集成到 `web-chains` 项目中 (https://github.com/Java-Chains/web-chains)
+
+![](img/006.png)
+
 ## 背景
 
 `jar-analyzer` 系列曾有一款工具 `jar-obfuscator` 实现 `jar` 包的混淆
