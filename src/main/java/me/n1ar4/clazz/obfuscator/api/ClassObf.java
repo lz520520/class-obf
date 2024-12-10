@@ -2,6 +2,8 @@ package me.n1ar4.clazz.obfuscator.api;
 
 import me.n1ar4.clazz.obfuscator.config.BaseConfig;
 import me.n1ar4.clazz.obfuscator.config.Manager;
+import me.n1ar4.clazz.obfuscator.core.AnalyzeEnv;
+import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.clazz.obfuscator.core.Runner;
 import me.n1ar4.clazz.obfuscator.utils.FileUtil;
 import me.n1ar4.jrandom.core.JRandom;
@@ -42,9 +44,8 @@ public class ClassObf {
 
     // 重载 - 支持输入 byte[] 字节码
     public Result run(byte[] input) {
-        String randomInputFile = JRandom.getInstance().randomString(16);
         try {
-            Path inputPath = Paths.get(randomInputFile + ".class");
+            Path inputPath = Files.createTempFile("class-obf", ".class");
             Files.write(inputPath, input);
             Result result = run(inputPath);
             if (result.getMessage().equals(Result.SUCCESS)) {
@@ -61,6 +62,7 @@ public class ClassObf {
     // 重载 - 支持输入 PATH
     public Result run(Path path) {
         try {
+            clean();
             Manager.initConfig(this.config);
             Runner.run(path, this.config);
             String fileName = FileUtil.getFileNameWithoutExt(path);
@@ -79,5 +81,29 @@ public class ClassObf {
             logger.error(ex.getMessage());
             return Result.Error(ex.getMessage());
         }
+    }
+
+    private void clean() {
+        AnalyzeEnv.classFileList.clear();
+
+        AnalyzeEnv.discoveredClasses.clear();
+        AnalyzeEnv.discoveredMethods.clear();
+
+        AnalyzeEnv.classMap.clear();
+        AnalyzeEnv.methodMap.clear();
+
+        AnalyzeEnv.methodCalls.clear();
+        AnalyzeEnv.methodsInClassMap.clear();
+
+        AnalyzeEnv.fieldsInClassMap.clear();
+
+        ObfEnv.stringInClass.clear();
+        ObfEnv.newStringInClass.clear();
+
+        ObfEnv.methodNameObfMapping.clear();
+        ObfEnv.fieldNameObfMapping.clear();
+
+        ObfEnv.config = new BaseConfig();
+        ObfEnv.ADVANCE_STRING_NAME = null;
     }
 }

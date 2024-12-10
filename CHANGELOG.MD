@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.1.1
+
+更新日志：
+
+- [BUG] 修复 `API` 调用多次报错的问题
+
+感谢以下用户的贡献:
+
+- 4ra1n (https://github.com/4ra1n)
+
+可供下载的文件都由 `Github Actions` 构建，使用 `java -jar class-obf.jar` 启动
+
 ## 1.1.0
 
 更新日志：
