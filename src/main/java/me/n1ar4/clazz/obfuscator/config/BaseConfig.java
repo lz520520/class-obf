@@ -17,12 +17,15 @@ public class BaseConfig {
     private boolean enableHideField;
 
     private boolean enableXOR;
+    private boolean enableAES;
     private boolean enableJunk;
     private boolean enableDeleteCompileInfo;
 
     private int junkLevel;
     private int maxJunkOneClass;
 
+    private String aesKey;
+    private String aesDecName;
     private String[] obfuscateChars;
     private String[] methodBlackList;
 
@@ -36,6 +39,9 @@ public class BaseConfig {
         config.setEnableAdvanceString(true);
         config.setEnableFieldName(true);
         config.setEnableXOR(true);
+        config.setEnableAES(true);
+        config.setAesKey("OBF_DEFAULT_KEYS");
+        config.setAesDecName("iiLLiLi");
         config.setEnableDeleteCompileInfo(true);
         config.setEnableParamName(true);
         config.setEnableMethodName(true);
@@ -71,6 +77,12 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(enableHideField)));
         System.out.println(ColorUtil.yellow("Enable XOR Obfuscate -> ") +
                 ColorUtil.green(String.valueOf(enableXOR)));
+        System.out.println(ColorUtil.yellow("Enable String AES Encrypt -> ") +
+                ColorUtil.green(String.valueOf(enableAES)));
+        System.out.println(ColorUtil.yellow("AES Decrypt KEY-> ") +
+                ColorUtil.green(String.valueOf(aesKey)));
+        System.out.println(ColorUtil.yellow("AES Decrypt Method-> ") +
+                ColorUtil.green(String.valueOf(aesDecName)));
         System.out.println(ColorUtil.yellow("Enable Advance String Obfuscate -> ") +
                 ColorUtil.green(String.valueOf(enableAdvanceString)));
         System.out.println(ColorUtil.cyan("[Advance String] Global List Name -> ") +
@@ -81,6 +93,30 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(junkLevel)));
         System.out.println(ColorUtil.cyan("[Junk Obfuscate] Max Number in One Class -> ") +
                 ColorUtil.green(String.valueOf(maxJunkOneClass)));
+    }
+
+    public String getAesDecName() {
+        return aesDecName;
+    }
+
+    public void setAesDecName(String aesDecName) {
+        this.aesDecName = aesDecName;
+    }
+
+    public String getAesKey() {
+        return aesKey;
+    }
+
+    public void setAesKey(String aesKey) {
+        this.aesKey = aesKey;
+    }
+
+    public boolean isEnableAES() {
+        return enableAES;
+    }
+
+    public void setEnableAES(boolean enableAES) {
+        this.enableAES = enableAES;
     }
 
     public boolean isEnableHideField() {

@@ -21,6 +21,10 @@
 
 ![](img/004.png)
 
+从 `1.2.0` 版本开始支持集中提取字符串后 `AES` 加密运行时解密
+
+![](img/007.png)
+
 本项目已深度集成到 `web-chains` 项目中 (https://github.com/Java-Chains/web-chains)
 
 ![](img/006.png)
@@ -179,6 +183,13 @@ enableParamName: true
 # 是否对数字进行异或混淆
 enableXOR: true
 
+# 对所有字符串进行 AES 加密
+enableAES: true
+# 默认 AES KEY 注意长度必须是 16
+aesKey: OBF_DEFAULT_KEYS
+# AES 解密方法名
+aesDecName: iiLLiLi
+
 # 是否启用全局字符串提取混淆
 enableAdvanceString: true
 # 全局提取字符串的变量名可以自定义
@@ -197,6 +208,7 @@ enableHideField: false
 # 是否开启方法隐藏
 # 可以防止大部分 IDEA 版本反编译
 enableHideMethod: false
+
 ```
 
 ## Thanks

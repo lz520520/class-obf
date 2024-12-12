@@ -1,11 +1,12 @@
 # CHANGELOG
 
-## 1.1.2
+## 1.2.0
 
 更新日志：
 
-- [BUG] 避免 `advanceStringName` 和混淆标识符冲突
-- [优化] 优化 `config.yaml` 模板排序和注释内容
+- [重要] 支持字符串 `AES` 加密运行时解密 @4ra1n
+- [BUG] 避免 `advanceStringName` 和混淆标识符冲突 @4ra1n
+- [优化] 优化 `config.yaml` 模板排序和注释内容 @4ra1n
 
 感谢以下用户的贡献:
 

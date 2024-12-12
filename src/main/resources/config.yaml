@@ -30,6 +30,13 @@ enableParamName: true
 # 是否对数字进行异或混淆
 enableXOR: true
 
+# 对所有字符串进行 AES 加密
+enableAES: true
+# 默认 AES KEY 注意长度必须是 16
+aesKey: OBF_DEFAULT_KEYS
+# AES 解密方法名
+aesDecName: iiLLiLi
+
 # 是否启用全局字符串提取混淆
 enableAdvanceString: true
 # 全局提取字符串的变量名可以自定义

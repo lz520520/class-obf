@@ -58,6 +58,7 @@ public class Manager {
         // 修复 BUG 2024/12/13
         // field / method 都不应该包含这个字符串
         NameUtil.exclude(config.getAdvanceStringName());
+        NameUtil.exclude(config.getAesDecName());
         ObfEnv.ADVANCE_STRING_NAME = config.getAdvanceStringName();
 
         return true;

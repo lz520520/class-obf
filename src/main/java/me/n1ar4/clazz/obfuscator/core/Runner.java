@@ -228,6 +228,11 @@ public class Runner {
             logger.info("run string array transformer finish");
         }
 
+        if (config.isEnableAES()) {
+            StringEncryptTransformer.transform(config.getAesKey(), config.getAesDecName());
+            logger.info("run string aes transformer finish");
+        }
+
         if (config.isEnableJunk()) {
             JunkCodeTransformer.transform(config);
             logger.info("run junk transformer finish");
