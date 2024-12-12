@@ -1,7 +1,6 @@
 package me.n1ar4.clazz.obfuscator.transform;
 
 import me.n1ar4.clazz.obfuscator.Const;
-import me.n1ar4.clazz.obfuscator.asm.IntToXorChanger;
 import me.n1ar4.clazz.obfuscator.asm.StringEncryptChanger;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;

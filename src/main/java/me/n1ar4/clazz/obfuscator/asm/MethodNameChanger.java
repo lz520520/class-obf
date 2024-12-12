@@ -9,7 +9,6 @@ import org.objectweb.asm.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings("all")
 public class MethodNameChanger extends ClassVisitor {

@@ -1,12 +1,9 @@
 package me.n1ar4.clazz.obfuscator.asm;
 
 import me.n1ar4.clazz.obfuscator.Const;
-import me.n1ar4.clazz.obfuscator.core.ObfEnv;
-import me.n1ar4.clazz.obfuscator.transform.StringArrayTransformer;
 import me.n1ar4.clazz.obfuscator.utils.AESUtil;
 import me.n1ar4.templates.AESTemplates;
 import org.objectweb.asm.*;
-import sun.invoke.util.VerifyAccess;
 
 public class StringEncryptChanger extends ClassVisitor {
     private String className;

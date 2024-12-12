@@ -5,7 +5,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 public class AESTemplates {
-    private static final String key="1234567890123456";
+    private static final String key = "1234567890123456";
+
     public static String encrypt(String data, String key) throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");

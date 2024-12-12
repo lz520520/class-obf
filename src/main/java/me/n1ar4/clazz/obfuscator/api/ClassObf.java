@@ -6,7 +6,6 @@ import me.n1ar4.clazz.obfuscator.core.AnalyzeEnv;
 import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.clazz.obfuscator.core.Runner;
 import me.n1ar4.clazz.obfuscator.utils.FileUtil;
-import me.n1ar4.jrandom.core.JRandom;
 import me.n1ar4.log.LogLevel;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
