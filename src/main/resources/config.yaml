@@ -2,11 +2,8 @@
 # 日志级别
 logLevel: info
 
-# 全局方法黑名单
-methodBlackList:
-  - "test"
-
 # 混淆字符组合
+# 建议使用长度大于等于 5 否则可能有预期外的 BUG
 obfuscateChars:
   - "i"
   - "l"
@@ -16,15 +13,19 @@ obfuscateChars:
 
 # 是否开启删除编译信息
 enableDeleteCompileInfo: true
+
+# 是否开启方法名混淆
+# 这里会自动修改方法之间的引用
+enableMethodName: true
+# 全局方法黑名单
+# 该方法不会进行混淆 引用也不会被修改
+methodBlackList:
+  - "test"
+
 # 是否开启字段混淆
 enableFieldName: true
-# 是否开启字段隐藏
-enableHideField: false
-# 是否开启方法隐藏
-enableHideMethod: false
-# 是否开启方法名混淆
-enableMethodName: true
 # 是否开启方法参数名混淆
+# 由于反编译器 可能显示的结果只是 var0 var1 等
 enableParamName: true
 # 是否对数字进行异或混淆
 enableXOR: true
@@ -40,3 +41,10 @@ enableJunk: true
 junkLevel: 3
 # 一个类中花指令最多数量
 maxJunkOneClass: 1000
+
+# 是否开启字段隐藏
+# 可以防止大部分 IDEA 版本反编译
+enableHideField: false
+# 是否开启方法隐藏
+# 可以防止大部分 IDEA 版本反编译
+enableHideMethod: false

@@ -5,6 +5,7 @@
 更新日志：
 
 - [BUG] 避免 `advanceStringName` 和混淆标识符冲突
+- [优化] 优化 `config.yaml` 模板排序和注释内容
 
 感谢以下用户的贡献:
 
