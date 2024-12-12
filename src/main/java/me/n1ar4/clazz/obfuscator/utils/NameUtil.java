@@ -12,6 +12,13 @@ public class NameUtil {
     private static final HashSet<String> generatedFields = new HashSet<>();
     private static final HashSet<String> packageNames = new HashSet<>();
 
+    public static void exclude(String s) {
+        generatedStrings.add(s);
+        generatedMethods.add(s);
+        generatedFields.add(s);
+        packageNames.add(s);
+    }
+
     public static String genNewName() {
         return genBase(1);
     }

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.1.2
+
+更新日志：
+
+- [BUG] 避免 `advanceStringName` 和混淆标识符冲突
+
+感谢以下用户的贡献:
+
+- 4ra1n (https://github.com/4ra1n)
+
+可供下载的文件都由 `Github Actions` 构建，使用 `java -jar class-obf.jar` 启动
+
 ## 1.1.1
 
 更新日志：

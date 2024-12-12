@@ -54,6 +54,10 @@ public class Manager {
         }
 
         JunkCodeChanger.MAX_JUNK_NUM = config.getMaxJunkOneClass();
+
+        // 修复 BUG 2024/12/13
+        // field / method 都不应该包含这个字符串
+        NameUtil.exclude(config.getAdvanceStringName());
         ObfEnv.ADVANCE_STRING_NAME = config.getAdvanceStringName();
 
         return true;
