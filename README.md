@@ -192,6 +192,8 @@ enableAES: true
 aesKey: OBF_DEFAULT_KEYS
 # AES 解密方法名
 aesDecName: iiLLiLi
+# AES KEY 字段名
+aesKeyField: iiiLLLi1i
 
 # 是否启用全局字符串提取混淆
 enableAdvanceString: true

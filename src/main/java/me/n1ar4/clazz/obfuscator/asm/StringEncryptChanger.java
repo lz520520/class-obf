@@ -1,6 +1,7 @@
 package me.n1ar4.clazz.obfuscator.asm;
 
 import me.n1ar4.clazz.obfuscator.Const;
+import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.clazz.obfuscator.utils.AESUtil;
 import me.n1ar4.templates.AESTemplates;
 import org.objectweb.asm.*;
@@ -20,6 +21,14 @@ public class StringEncryptChanger extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.className = name;
         super.visit(version, access, name, signature, superName, interfaces);
+        FieldVisitor fieldVisitor = this.cv.visitField(
+                // private static final String [AES KEY] = "AES KEY";
+                Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
+                ObfEnv.config.getAesKeyField(),
+                "Ljava/lang/String;",
+                null,
+                ObfEnv.config.getAesKey());
+        fieldVisitor.visitEnd();
     }
 
     @Override
@@ -161,7 +170,8 @@ public class StringEncryptChanger extends ClassVisitor {
             if (value instanceof String) {
                 try {
                     mv.visitLdcInsn(AESTemplates.encrypt((String) value, this.aesKey));
-                    mv.visitLdcInsn(this.aesKey);
+                    mv.visitFieldInsn(Opcodes.GETSTATIC, className,
+                            ObfEnv.config.getAesKeyField(), "Ljava/lang/String;");
                     mv.visitMethodInsn(
                             Opcodes.INVOKESTATIC,
                             className,

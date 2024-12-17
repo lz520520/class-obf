@@ -28,6 +28,7 @@ public class BaseConfig {
 
     private String aesKey;
     private String aesDecName;
+    private String aesKeyField;
     private String[] obfuscateChars;
     private String[] methodBlackList;
 
@@ -44,6 +45,7 @@ public class BaseConfig {
         config.setEnableXOR(true);
         config.setEnableAES(true);
         config.setAesKey("OBF_DEFAULT_KEYS");
+        config.setAesKeyField("iiiLLLi1i");
         config.setAesDecName("iiLLiLi");
         config.setEnableDeleteCompileInfo(true);
         config.setEnableParamName(true);
@@ -86,6 +88,8 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(enableAES)));
         System.out.println(ColorUtil.yellow("AES Decrypt KEY-> ") +
                 ColorUtil.green(String.valueOf(aesKey)));
+        System.out.println(ColorUtil.yellow("AES KEY Field-> ") +
+                ColorUtil.green(String.valueOf(aesKeyField)));
         System.out.println(ColorUtil.yellow("AES Decrypt Method-> ") +
                 ColorUtil.green(String.valueOf(aesDecName)));
         System.out.println(ColorUtil.yellow("Enable Advance String Obfuscate -> ") +
@@ -98,6 +102,14 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(junkLevel)));
         System.out.println(ColorUtil.cyan("[Junk Obfuscate] Max Number in One Class -> ") +
                 ColorUtil.green(String.valueOf(maxJunkOneClass)));
+    }
+
+    public String getAesKeyField() {
+        return aesKeyField;
+    }
+
+    public void setAesKeyField(String aesKeyField) {
+        this.aesKeyField = aesKeyField;
     }
 
     public boolean isAsmAutoCompute() {

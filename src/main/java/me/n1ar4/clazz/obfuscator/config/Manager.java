@@ -59,6 +59,7 @@ public class Manager {
         // field / method 都不应该包含这个字符串
         NameUtil.exclude(config.getAdvanceStringName());
         NameUtil.exclude(config.getAesDecName());
+        NameUtil.exclude(config.getAesKeyField());
         ObfEnv.ADVANCE_STRING_NAME = config.getAdvanceStringName();
 
         return true;
