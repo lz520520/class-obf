@@ -50,9 +50,7 @@ public class MethodNameChanger extends ClassVisitor {
             }
         }
 
-        if ("main".equals(name) && desc.equals("([Ljava/lang/String;)V") && access == 9) {
-            mv = super.visitMethod(access, name, desc, signature, exceptions);
-        } else if (name.equals("<init>") || name.equals("<clinit>")) {
+        if (name.equals("<init>") || name.equals("<clinit>")) {
             mv = super.visitMethod(access, name, desc, signature, exceptions);
         } else {
             MethodReference.Handle m = ObfEnv.methodNameObfMapping.get(new MethodReference.Handle(

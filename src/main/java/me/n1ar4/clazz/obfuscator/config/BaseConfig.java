@@ -32,6 +32,48 @@ public class BaseConfig {
     private String[] obfuscateChars;
     private String[] methodBlackList;
 
+    /**
+     * 如果配置没问题可以启动就返回 true
+     *
+     * @return true/false
+     */
+    public boolean isValid() {
+        if (logLevel == null || logLevel.trim().isEmpty()) {
+            System.out.println(ColorUtil.red("[ERROR] log level is null"));
+            return false;
+        }
+        if (advanceStringName == null || advanceStringName.trim().isEmpty()) {
+            System.out.println(ColorUtil.red("[ERROR] advance string name is null"));
+            return false;
+        }
+        if (aesKey == null || aesKey.trim().isEmpty()) {
+            System.out.println(ColorUtil.red("[ERROR] aes key is null"));
+            return false;
+        }
+        if (aesDecName == null || aesDecName.trim().isEmpty()) {
+            System.out.println(ColorUtil.red("[ERROR] aes dec name is null"));
+            return false;
+        }
+        if (aesKeyField == null || aesKeyField.trim().isEmpty()) {
+            System.out.println(ColorUtil.red("[ERROR] aes key field is null"));
+            return false;
+        }
+        if (obfuscateChars == null || obfuscateChars.length == 0) {
+            System.out.println(ColorUtil.red("[ERROR] obfuscate chars is null"));
+            return false;
+        }
+        // methodBlackList 允许是空
+        if (junkLevel < 1 || junkLevel > 5) {
+            System.out.println(ColorUtil.red("[ERROR] junk level must be between 1 and 5"));
+            return false;
+        }
+        if (maxJunkOneClass < 1 || maxJunkOneClass > 10000) {
+            System.out.println(ColorUtil.red("[ERROR] max junk must be between 1 and 10000"));
+            return false;
+        }
+        return true;
+    }
+
     public static BaseConfig Default() {
         BaseConfig config = new BaseConfig();
         config.setAsmAutoCompute(true);

@@ -176,7 +176,7 @@ enableMethodName: true
 # 全局方法黑名单
 # 该方法不会进行混淆 引用也不会被修改
 methodBlackList:
-  - "test"
+  - "main"
 
 # 是否开启字段混淆
 enableFieldName: true

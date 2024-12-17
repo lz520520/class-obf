@@ -15,6 +15,10 @@ public class Manager {
         JRandom random = new JRandom();
         JRandom.setInstance(random);
 
+        if (!config.isValid()) {
+            return false;
+        }
+
         // LOG LEVEL
         String logLevel = config.getLogLevel();
         switch (logLevel) {
