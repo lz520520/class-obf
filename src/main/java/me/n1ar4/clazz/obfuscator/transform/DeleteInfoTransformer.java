@@ -2,6 +2,7 @@ package me.n1ar4.clazz.obfuscator.transform;
 
 import me.n1ar4.clazz.obfuscator.Const;
 import me.n1ar4.clazz.obfuscator.asm.CompileInfoChanger;
+import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
 import org.objectweb.asm.ClassReader;
@@ -21,7 +22,8 @@ public class DeleteInfoTransformer {
         }
         try {
             ClassReader classReader = new ClassReader(Files.readAllBytes(classPath));
-            ClassWriter classWriter = new ClassWriter(classReader, Const.WriterASMOptions);
+            ClassWriter classWriter = new ClassWriter(classReader,
+                    ObfEnv.config.isAsmAutoCompute() ? Const.WriterASMOptions : 0);
             CompileInfoChanger changer = new CompileInfoChanger(classWriter);
             classReader.accept(changer, Const.ReaderASMOptions);
             Files.delete(classPath);

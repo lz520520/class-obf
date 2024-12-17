@@ -7,6 +7,8 @@ import java.util.Arrays;
 public class BaseConfig {
     private String logLevel;
 
+    private boolean asmAutoCompute;
+
     private boolean enableFieldName;
     private boolean enableMethodName;
     private boolean enableParamName;
@@ -31,6 +33,7 @@ public class BaseConfig {
 
     public static BaseConfig Default() {
         BaseConfig config = new BaseConfig();
+        config.setAsmAutoCompute(true);
         config.setLogLevel("info");
         // 默认不开隐藏
         config.setEnableHideField(false);
@@ -59,6 +62,8 @@ public class BaseConfig {
     public void show() {
         System.out.println(ColorUtil.purple("[GLOBAL] Log Level -> ") +
                 ColorUtil.green(logLevel));
+        System.out.println(ColorUtil.purple("[GLOBAL] ASM Auto Compute -> ") +
+                ColorUtil.green(String.valueOf(asmAutoCompute)));
         System.out.println(ColorUtil.purple("[GLOBAL] Obfuscate Chars -> ") +
                 ColorUtil.green(Arrays.toString(obfuscateChars)));
         System.out.println(ColorUtil.purple("[GLOBAL] Method Blacklist -> ") +
@@ -93,6 +98,14 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(junkLevel)));
         System.out.println(ColorUtil.cyan("[Junk Obfuscate] Max Number in One Class -> ") +
                 ColorUtil.green(String.valueOf(maxJunkOneClass)));
+    }
+
+    public boolean isAsmAutoCompute() {
+        return asmAutoCompute;
+    }
+
+    public void setAsmAutoCompute(boolean asmAutoCompute) {
+        this.asmAutoCompute = asmAutoCompute;
     }
 
     public String getAesDecName() {

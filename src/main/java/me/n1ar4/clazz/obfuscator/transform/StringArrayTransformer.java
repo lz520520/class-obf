@@ -2,6 +2,7 @@ package me.n1ar4.clazz.obfuscator.transform;
 
 import me.n1ar4.clazz.obfuscator.Const;
 import me.n1ar4.clazz.obfuscator.asm.StringArrayChanger;
+import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
 import org.objectweb.asm.ClassReader;
@@ -24,7 +25,8 @@ public class StringArrayTransformer {
         try {
             INDEX = 0;
             ClassReader classReader = new ClassReader(Files.readAllBytes(newClassPath));
-            ClassWriter classWriter = new ClassWriter(classReader, Const.WriterASMOptions);
+            ClassWriter classWriter = new ClassWriter(classReader,
+                    ObfEnv.config.isAsmAutoCompute() ? Const.WriterASMOptions : 0);
             StringArrayChanger changer = new StringArrayChanger(classWriter);
             classReader.accept(changer, Const.ReaderASMOptions);
             Files.delete(newClassPath);

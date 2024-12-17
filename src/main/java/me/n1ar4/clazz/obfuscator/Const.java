@@ -13,6 +13,6 @@ public interface Const {
     Path configPath = Paths.get("config.yaml");
     Path TEMP_PATH = Paths.get("class-obf-temp.class");
     int ASMVersion = Opcodes.ASM9;
-    int ReaderASMOptions = ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES;
+    int ReaderASMOptions = ClassReader.SKIP_FRAMES;
     int WriterASMOptions = ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS;
 }

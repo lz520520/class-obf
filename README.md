@@ -154,6 +154,9 @@ if (result.getMessage().equals(Result.SUCCESS)) {
 !!me.n1ar4.clazz.obfuscator.config.BaseConfig
 # 日志级别
 logLevel: info
+# 是否启动 JAVA ASM 的 COMPUTE FRAMES/MAX 自动计算
+# 如果遇到 TYPE * NOT PRESENT 报错可以尝试设置该选项为 FALSE
+asmAutoCompute: true
 
 # 混淆字符组合
 # 建议使用长度大于等于 5 否则可能有预期外的 BUG

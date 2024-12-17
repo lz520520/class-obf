@@ -3,6 +3,7 @@ package me.n1ar4.clazz.obfuscator.transform;
 import me.n1ar4.clazz.obfuscator.Const;
 import me.n1ar4.clazz.obfuscator.asm.JunkCodeChanger;
 import me.n1ar4.clazz.obfuscator.config.BaseConfig;
+import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.clazz.obfuscator.loader.CustomClassLoader;
 import me.n1ar4.clazz.obfuscator.loader.CustomClassWriter;
 import me.n1ar4.log.LogManager;
@@ -28,7 +29,8 @@ public class JunkCodeTransformer {
             ClassReader classReader = new ClassReader(Files.readAllBytes(newClassPath));
             CustomClassLoader loader = new CustomClassLoader();
             // COMPUTE_FRAMES 需要修改 CLASSLOADER 来计算
-            ClassWriter classWriter = new CustomClassWriter(classReader, Const.WriterASMOptions, loader);
+            ClassWriter classWriter = new CustomClassWriter(classReader,
+                    ObfEnv.config.isAsmAutoCompute() ? Const.WriterASMOptions : 0, loader);
             JunkCodeChanger changer = new JunkCodeChanger(classWriter, config);
             try {
                 classReader.accept(changer, Const.ReaderASMOptions);
