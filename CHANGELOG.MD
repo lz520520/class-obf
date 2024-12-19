@@ -4,11 +4,12 @@
 
 更新日志：
 
-- todo
+- [功能] 支持新配置参数忽略 `public` 方法的混淆 @4ra1n
 
 感谢以下用户的贡献:
 
 - 4ra1n (https://github.com/4ra1n)
+- lz520520 (https://github.com/lz520520)
 
 可供下载的文件都由 `Github Actions` 构建，使用 `java -jar class-obf.jar` 启动
 

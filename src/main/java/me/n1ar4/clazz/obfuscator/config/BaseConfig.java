@@ -26,6 +26,8 @@ public class BaseConfig {
     private int junkLevel;
     private int maxJunkOneClass;
 
+    private boolean ignorePublic;
+
     private String aesKey;
     private String aesDecName;
     private String aesKeyField;
@@ -92,6 +94,7 @@ public class BaseConfig {
         config.setEnableDeleteCompileInfo(true);
         config.setEnableParamName(true);
         config.setEnableMethodName(true);
+        config.setIgnorePublic(false);
         // 默认花指令配置
         config.setEnableJunk(true);
         config.setJunkLevel(3);
@@ -118,6 +121,8 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(enableFieldName)));
         System.out.println(ColorUtil.yellow("Enable Method Name Obfuscate -> ") +
                 ColorUtil.green(String.valueOf(enableMethodName)));
+        System.out.println(ColorUtil.yellow("Ignore Public Method -> ") +
+                ColorUtil.green(String.valueOf(ignorePublic)));
         System.out.println(ColorUtil.yellow("Enable Param Name Obfuscate -> ") +
                 ColorUtil.green(String.valueOf(enableParamName)));
         System.out.println(ColorUtil.yellow("Enable Hide Method Obfuscate -> ") +
@@ -144,6 +149,14 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(junkLevel)));
         System.out.println(ColorUtil.cyan("[Junk Obfuscate] Max Number in One Class -> ") +
                 ColorUtil.green(String.valueOf(maxJunkOneClass)));
+    }
+
+    public boolean isIgnorePublic() {
+        return ignorePublic;
+    }
+
+    public void setIgnorePublic(boolean ignorePublic) {
+        this.ignorePublic = ignorePublic;
     }
 
     public String getAesKeyField() {

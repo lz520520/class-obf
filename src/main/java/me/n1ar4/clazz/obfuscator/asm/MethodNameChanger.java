@@ -14,7 +14,6 @@ import java.util.List;
 public class MethodNameChanger extends ClassVisitor {
     private String owner;
     private final List<MethodReference> ignoreMethods = new ArrayList<>();
-    private final List<String> ignoreMethodString = new ArrayList<>();
 
     public MethodNameChanger(ClassVisitor classVisitor) {
         super(Const.ASMVersion, classVisitor);
@@ -44,8 +43,9 @@ public class MethodNameChanger extends ClassVisitor {
             }
         }
 
-        for (String method : this.ignoreMethodString) {
-            if (method.equals(name)) {
+        // 2024/12/19 允许跳过 public 方法
+        if ((access & Opcodes.ACC_PUBLIC) != 0) {
+            if (ObfEnv.config.isIgnorePublic()) {
                 return super.visitMethod(access, name, desc, signature, exceptions);
             }
         }
