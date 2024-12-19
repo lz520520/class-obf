@@ -46,6 +46,7 @@
 - 配置大幅简化，仅针对单个 `Class` 文件
 - 命令行输出改善，详细展示混淆细节
 - 你可以只混淆你项目的核心类替换即可（方便快速）
+- 提供了多种方式的 `API` 调用
 
 ## 快速开始
 
@@ -154,6 +155,8 @@ if (result.getMessage().equals(Result.SUCCESS)) {
 !!me.n1ar4.clazz.obfuscator.config.BaseConfig
 # 日志级别
 logLevel: info
+# 是否使用安静模式（不打印调试信息）
+quiet: false
 # 是否启动 JAVA ASM 的 COMPUTE FRAMES/MAX 自动计算
 # 如果遇到 TYPE * NOT PRESENT 报错可以尝试设置该选项为 FALSE
 asmAutoCompute: true

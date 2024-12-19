@@ -7,6 +7,8 @@ import java.util.Arrays;
 public class BaseConfig {
     private String logLevel;
 
+    private boolean quiet;
+
     private boolean asmAutoCompute;
 
     private boolean enableFieldName;
@@ -149,6 +151,14 @@ public class BaseConfig {
                 ColorUtil.green(String.valueOf(junkLevel)));
         System.out.println(ColorUtil.cyan("[Junk Obfuscate] Max Number in One Class -> ") +
                 ColorUtil.green(String.valueOf(maxJunkOneClass)));
+    }
+
+    public boolean isQuiet() {
+        return quiet;
+    }
+
+    public void setQuiet(boolean quiet) {
+        this.quiet = quiet;
     }
 
     public boolean isIgnorePublic() {

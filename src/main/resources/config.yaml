@@ -1,6 +1,8 @@
 !!me.n1ar4.clazz.obfuscator.config.BaseConfig
 # 日志级别
 logLevel: info
+# 是否使用安静模式（不打印调试信息）
+quiet: false
 # 是否启动 JAVA ASM 的 COMPUTE FRAMES/MAX 自动计算
 # 如果遇到 TYPE * NOT PRESENT 报错可以尝试设置该选项为 FALSE
 asmAutoCompute: true

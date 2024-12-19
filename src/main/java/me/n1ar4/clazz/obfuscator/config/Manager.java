@@ -38,6 +38,10 @@ public class Manager {
                 logger.error("error log level");
                 return false;
         }
+        // 只打印报错信息
+        if (config.isQuiet()) {
+            LogManager.setLevel(LogLevel.ERROR);
+        }
 
         // CHARS
         if (config.getObfuscateChars() == null ||

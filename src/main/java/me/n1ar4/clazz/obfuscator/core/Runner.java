@@ -33,13 +33,15 @@ public class Runner {
     }
 
     public static void run(Path path, BaseConfig config) {
-        // 输出配置信息
-        System.out.println(
-                ColorUtil.blue("######################## OBFUSCATE CONFIG ########################"));
         ObfEnv.config = config;
-        config.show();
-        System.out.println(
-                ColorUtil.blue("##################################################################"));
+        if (!config.isQuiet()) {
+            // 输出配置信息
+            System.out.println(
+                    ColorUtil.blue("######################## OBFUSCATE CONFIG ########################"));
+            config.show();
+            System.out.println(
+                    ColorUtil.blue("##################################################################"));
+        }
 
         String fileName = FileUtil.getFileNameWithoutExt(path);
         String newFile = fileName + "_obf.class";
@@ -156,45 +158,45 @@ public class Runner {
         ArrayList<String> newRes = new ArrayList<>(t);
         ObfEnv.newStringInClass.put(e.getKey().getName(), newRes);
         logger.info("build string mapping finish");
-
-        System.out.println(
-                ColorUtil.blue("######################### ANALYSIS DATA #########################"));
-        System.out.println(ColorUtil.green("AnalyzeEnv.classFileList -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.classFileList.size())));
-        System.out.println(ColorUtil.green("AnalyzeEnv.discoveredClasses -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.discoveredClasses.size())));
-        System.out.println(ColorUtil.green("AnalyzeEnv.discoveredMethods -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.discoveredMethods.size())));
-        System.out.println(ColorUtil.green("AnalyzeEnv.methodsInClassMap -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.methodsInClassMap.size())));
-        System.out.println(ColorUtil.green("AnalyzeEnv.methodCalls -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.methodCalls.size())));
-        System.out.println(ColorUtil.green("AnalyzeEnv.classMap -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.classMap.size())));
-        System.out.println(ColorUtil.green("AnalyzeEnv.methodMap -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.methodMap.size())));
-        System.out.println(ColorUtil.green("AnalyzeEnv.fieldsInClassMap -> ") +
-                ColorUtil.red(String.valueOf(AnalyzeEnv.fieldsInClassMap.size())));
-        System.out.println(
-                ColorUtil.blue("#################################################################"));
-
+        if (!config.isQuiet()) {
+            System.out.println(
+                    ColorUtil.blue("######################### ANALYSIS DATA #########################"));
+            System.out.println(ColorUtil.green("AnalyzeEnv.classFileList -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.classFileList.size())));
+            System.out.println(ColorUtil.green("AnalyzeEnv.discoveredClasses -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.discoveredClasses.size())));
+            System.out.println(ColorUtil.green("AnalyzeEnv.discoveredMethods -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.discoveredMethods.size())));
+            System.out.println(ColorUtil.green("AnalyzeEnv.methodsInClassMap -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.methodsInClassMap.size())));
+            System.out.println(ColorUtil.green("AnalyzeEnv.methodCalls -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.methodCalls.size())));
+            System.out.println(ColorUtil.green("AnalyzeEnv.classMap -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.classMap.size())));
+            System.out.println(ColorUtil.green("AnalyzeEnv.methodMap -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.methodMap.size())));
+            System.out.println(ColorUtil.green("AnalyzeEnv.fieldsInClassMap -> ") +
+                    ColorUtil.red(String.valueOf(AnalyzeEnv.fieldsInClassMap.size())));
+            System.out.println(
+                    ColorUtil.blue("#################################################################"));
+        }
         logger.info("build obfuscate data finish");
-
-        System.out.println(
-                ColorUtil.blue("######################### OBFUSCATE DATA #########################"));
-        System.out.println(ColorUtil.green("ObfEnv.ADVANCE_STRING_NAME -> ") +
-                ColorUtil.red(String.valueOf(ObfEnv.ADVANCE_STRING_NAME)));
-        System.out.println(ColorUtil.green("ObfEnv.methodNameObfMapping -> ") +
-                ColorUtil.red(String.valueOf(ObfEnv.methodNameObfMapping.size())));
-        System.out.println(ColorUtil.green("ObfEnv.fieldNameObfMapping -> ") +
-                ColorUtil.red(String.valueOf(ObfEnv.fieldNameObfMapping.size())));
-        System.out.println(ColorUtil.green("ObfEnv.stringInClass -> ") +
-                ColorUtil.red(String.valueOf(ObfEnv.stringInClass.size())));
-        System.out.println(ColorUtil.green("ObfEnv.newStringInClass -> ") +
-                ColorUtil.red(String.valueOf(ObfEnv.newStringInClass.size())));
-        System.out.println(
-                ColorUtil.blue("#################################################################"));
-
+        if (!config.isQuiet()) {
+            System.out.println(
+                    ColorUtil.blue("######################### OBFUSCATE DATA #########################"));
+            System.out.println(ColorUtil.green("ObfEnv.ADVANCE_STRING_NAME -> ") +
+                    ColorUtil.red(String.valueOf(ObfEnv.ADVANCE_STRING_NAME)));
+            System.out.println(ColorUtil.green("ObfEnv.methodNameObfMapping -> ") +
+                    ColorUtil.red(String.valueOf(ObfEnv.methodNameObfMapping.size())));
+            System.out.println(ColorUtil.green("ObfEnv.fieldNameObfMapping -> ") +
+                    ColorUtil.red(String.valueOf(ObfEnv.fieldNameObfMapping.size())));
+            System.out.println(ColorUtil.green("ObfEnv.stringInClass -> ") +
+                    ColorUtil.red(String.valueOf(ObfEnv.stringInClass.size())));
+            System.out.println(ColorUtil.green("ObfEnv.newStringInClass -> ") +
+                    ColorUtil.red(String.valueOf(ObfEnv.newStringInClass.size())));
+            System.out.println(
+                    ColorUtil.blue("#################################################################"));
+        }
         if (config.isEnableDeleteCompileInfo()) {
             DeleteInfoTransformer.transform();
             logger.info("run delete info transformer finish");
@@ -237,9 +239,10 @@ public class Runner {
             JunkCodeTransformer.transform(config);
             logger.info("run junk transformer finish");
         }
-
-        System.out.println(
-                ColorUtil.blue("###################### ALL OBFUSCATE FINISH ######################"));
+        if (!config.isQuiet()) {
+            System.out.println(
+                    ColorUtil.blue("###################### ALL OBFUSCATE FINISH ######################"));
+        }
 
         try {
             Files.write(Paths.get(newFile), Files.readAllBytes(Const.TEMP_PATH));
