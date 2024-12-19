@@ -8,14 +8,18 @@ public class AESTemplates {
     private static final String key = "1234567890123456";
 
     public static String encrypt(String data, String key) throws Exception {
+        key = new StringBuilder(key).reverse().toString();
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encryptedBytes = cipher.doFinal(data.getBytes());
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        String base = Base64.getEncoder().encodeToString(encryptedBytes);
+        return new StringBuilder(base).reverse().toString();
     }
 
     public static String decrypt(String encryptedData, String key) throws Exception {
+        key = new StringBuilder(key).reverse().toString();
+        encryptedData = new StringBuilder(encryptedData).reverse().toString();
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
