@@ -101,6 +101,10 @@ public class Test {
 
 ![](img/005.png)
 
+使用 `--std-output` 参数将会导出标准的 `class` 文件以及对应的包名
+
+例如 `me.n1ar4.Test` 将会导出 `class-obf-output/me/n1ar4/Test.class` 文件
+
 ## API
 
 你可以使用代码方式调用（参考 `test` 目录的 `TestQuick/TestAPI` 文件）
