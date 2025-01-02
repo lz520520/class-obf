@@ -157,7 +157,7 @@ if (result.getMessage().equals(Result.SUCCESS)) {
 config.setQuiet(true);
 ```
 
-**注意：由于设计原因，以上代码不支持并发**
+**注意：由于设计原因，混淆 `API` 不支持并发**
 
 ## 配置文件
 
