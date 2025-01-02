@@ -1,7 +1,7 @@
 package me.n1ar4.clazz.obfuscator.transform;
 
 import me.n1ar4.clazz.obfuscator.Const;
-import me.n1ar4.clazz.obfuscator.asm.StringEncryptChanger;
+import me.n1ar4.clazz.obfuscator.asm.StringEncryptClassVisitor;
 import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
@@ -25,7 +25,7 @@ public class StringEncryptTransformer {
             ClassReader classReader = new ClassReader(Files.readAllBytes(newClassPath));
             ClassWriter classWriter = new ClassWriter(classReader,
                     ObfEnv.config.isAsmAutoCompute() ? Const.WriterASMOptions : 0);
-            StringEncryptChanger changer = new StringEncryptChanger(classWriter, aesKey, aesDecName);
+            StringEncryptClassVisitor changer = new StringEncryptClassVisitor(classWriter, aesKey, aesDecName);
             classReader.accept(changer, Const.ReaderASMOptions);
             Files.delete(newClassPath);
             Files.write(newClassPath, classWriter.toByteArray());

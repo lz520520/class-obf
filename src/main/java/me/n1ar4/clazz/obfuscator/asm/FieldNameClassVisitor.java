@@ -1,58 +1,109 @@
 package me.n1ar4.clazz.obfuscator.asm;
 
 import me.n1ar4.clazz.obfuscator.Const;
+import me.n1ar4.clazz.obfuscator.base.ClassField;
 import me.n1ar4.clazz.obfuscator.core.ObfEnv;
-import me.n1ar4.clazz.obfuscator.utils.AESUtil;
-import me.n1ar4.templates.AESTemplates;
 import org.objectweb.asm.*;
 
-public class StringEncryptChanger extends ClassVisitor {
+public class FieldNameClassVisitor extends ClassVisitor {
     private String className;
-    private final String aesKey;
-    private final String aesDecName;
 
-    public StringEncryptChanger(ClassVisitor classVisitor, String aesKey, String aesDecName) {
+    public FieldNameClassVisitor(ClassVisitor classVisitor) {
         super(Const.ASMVersion, classVisitor);
-        this.aesKey = aesKey;
-        this.aesDecName = aesDecName;
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.className = name;
         super.visit(version, access, name, signature, superName, interfaces);
-        FieldVisitor fieldVisitor = this.cv.visitField(
-                // private static final String [AES KEY] = "AES KEY";
-                Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
-                ObfEnv.config.getAesKeyField(),
-                "Ljava/lang/String;",
-                null,
-                ObfEnv.config.getAesKey());
-        fieldVisitor.visitEnd();
     }
 
     @Override
-    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-        return new StringEncryptMethodAdapter(mv, className, aesKey, aesDecName);
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+        return new FieldNameChangerMethodAdapter(mv);
+    }
+
+    @Override
+    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+        return super.visitAnnotation(descriptor, visible);
+    }
+
+    @Override
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
+        return super.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
+    }
+
+    @Override
+    public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+        ClassField cf = new ClassField();
+        cf.setClassName(this.className);
+        cf.setFieldName(name);
+        ClassField newCF = ObfEnv.fieldNameObfMapping.getOrDefault(cf, cf);
+        if (ObfEnv.config.isEnableHideField()) {
+            access = access | Opcodes.ACC_SYNTHETIC;
+        }
+        return super.visitField(access, newCF.getFieldName(), descriptor, signature, value);
+    }
+
+    @Override
+    public ModuleVisitor visitModule(String name, int access, String version) {
+        return super.visitModule(name, access, version);
+    }
+
+    @Override
+    public RecordComponentVisitor visitRecordComponent(String name, String descriptor, String signature) {
+        return super.visitRecordComponent(name, descriptor, signature);
+    }
+
+    @Override
+    public void visitAttribute(Attribute attribute) {
+        super.visitAttribute(attribute);
     }
 
     @Override
     public void visitEnd() {
-        AESUtil.addAesDecodeCode(cv, this.aesDecName);
         super.visitEnd();
     }
 
-    static class StringEncryptMethodAdapter extends MethodVisitor {
-        private final String className;
-        private final String aesKey;
-        private final String aesDecName;
+    @Override
+    public void visitInnerClass(String name, String outerName, String innerName, int access) {
+        super.visitInnerClass(name, outerName, innerName, access);
+    }
 
-        StringEncryptMethodAdapter(MethodVisitor mv, String name, String aesKey, String aesDecName) {
+    @Override
+    public void visitNestHost(String nestHost) {
+        super.visitNestHost(nestHost);
+    }
+
+    @Override
+    public void visitNestMember(String nestMember) {
+        super.visitNestMember(nestMember);
+    }
+
+    @Override
+    public void visitOuterClass(String owner, String name, String descriptor) {
+        super.visitOuterClass(owner, name, descriptor);
+    }
+
+    @Override
+    public void visitPermittedSubclass(String permittedSubclass) {
+        super.visitPermittedSubclass(permittedSubclass);
+    }
+
+    @Override
+    public void visitSource(String source, String debug) {
+        super.visitSource(source, debug);
+    }
+
+    @Override
+    public ClassVisitor getDelegate() {
+        return super.getDelegate();
+    }
+
+    static class FieldNameChangerMethodAdapter extends MethodVisitor {
+        FieldNameChangerMethodAdapter(MethodVisitor mv) {
             super(Const.ASMVersion, mv);
-            this.className = name;
-            this.aesKey = aesKey;
-            this.aesDecName = aesDecName;
         }
 
         @Override
@@ -62,7 +113,11 @@ public class StringEncryptChanger extends ClassVisitor {
 
         @Override
         public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
-            super.visitFieldInsn(opcode, owner, name, descriptor);
+            ClassField cf = new ClassField();
+            cf.setClassName(owner);
+            cf.setFieldName(name);
+            ClassField newCF = ObfEnv.fieldNameObfMapping.getOrDefault(cf, cf);
+            super.visitFieldInsn(opcode, owner, newCF.getFieldName(), descriptor);
         }
 
         @Override
@@ -167,23 +222,7 @@ public class StringEncryptChanger extends ClassVisitor {
 
         @Override
         public void visitLdcInsn(Object value) {
-            if (value instanceof String) {
-                try {
-                    mv.visitLdcInsn(AESTemplates.encrypt((String) value, this.aesKey));
-                    mv.visitFieldInsn(Opcodes.GETSTATIC, className,
-                            ObfEnv.config.getAesKeyField(), "Ljava/lang/String;");
-                    mv.visitMethodInsn(
-                            Opcodes.INVOKESTATIC,
-                            className,
-                            this.aesDecName,
-                            "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
-                            false);
-                } catch (Exception ignored) {
-                    super.visitLdcInsn(value);
-                }
-            } else {
-                super.visitLdcInsn(value);
-            }
+            super.visitLdcInsn(value);
         }
 
         @Override

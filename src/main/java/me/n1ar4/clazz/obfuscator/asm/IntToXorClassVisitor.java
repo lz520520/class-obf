@@ -6,8 +6,8 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-public class IntToXorChanger extends ClassVisitor {
-    public IntToXorChanger(ClassVisitor cv) {
+public class IntToXorClassVisitor extends ClassVisitor {
+    public IntToXorClassVisitor(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
     }
 

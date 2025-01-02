@@ -147,6 +147,8 @@ if (result.getMessage().equals(Result.SUCCESS)) {
 }
 ```
 
+**注意：由于设计原因，以上代码不支持并发**
+
 ## 配置文件
 
 可以根据你的需求修改配置文件

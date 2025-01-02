@@ -1,6 +1,6 @@
 package me.n1ar4.clazz.obfuscator.config;
 
-import me.n1ar4.clazz.obfuscator.asm.JunkCodeChanger;
+import me.n1ar4.clazz.obfuscator.asm.JunkCodeClassVisitor;
 import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import me.n1ar4.clazz.obfuscator.utils.NameUtil;
 import me.n1ar4.jrandom.core.JRandom;
@@ -62,7 +62,7 @@ public class Manager {
             NameUtil.CHAR_POOL = data;
         }
 
-        JunkCodeChanger.MAX_JUNK_NUM = config.getMaxJunkOneClass();
+        JunkCodeClassVisitor.MAX_JUNK_NUM = config.getMaxJunkOneClass();
 
         // 修复 BUG 2024/12/13
         // field / method 都不应该包含这个字符串

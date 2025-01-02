@@ -1,25 +1,75 @@
 package me.n1ar4.clazz.obfuscator.asm;
 
 import me.n1ar4.clazz.obfuscator.Const;
-import me.n1ar4.clazz.obfuscator.utils.NameUtil;
+import me.n1ar4.clazz.obfuscator.base.ClassReference;
+import me.n1ar4.clazz.obfuscator.base.MethodReference;
+import me.n1ar4.clazz.obfuscator.core.AnalyzeEnv;
+import me.n1ar4.clazz.obfuscator.core.ObfEnv;
 import org.objectweb.asm.*;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ParameterChanger extends ClassVisitor {
-    public ParameterChanger(ClassVisitor classVisitor) {
+@SuppressWarnings("all")
+public class MethodNameClassVisitor extends ClassVisitor {
+    private String owner;
+    private final List<MethodReference> ignoreMethods = new ArrayList<>();
+
+    public MethodNameClassVisitor(ClassVisitor classVisitor) {
         super(Const.ASMVersion, classVisitor);
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        this.owner = name;
+        // 查接口 不改接口方法
+        for (String in : interfaces) {
+            List<MethodReference> mList = AnalyzeEnv.methodsInClassMap.get(new ClassReference.Handle(in));
+            if (mList == null) {
+                continue;
+            }
+            ignoreMethods.addAll(mList);
+        }
         super.visit(version, access, name, signature, superName, interfaces);
     }
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
-        return new ParameterChangerMethodAdapter(mv);
+        MethodVisitor mv;
+
+        for (MethodReference mr : ignoreMethods) {
+            if (mr.getName().equals(name) && mr.getDesc().equals(desc)) {
+                return super.visitMethod(access, name, desc, signature, exceptions);
+            }
+        }
+
+        // 2024/12/19 允许跳过 public 方法
+        if ((access & Opcodes.ACC_PUBLIC) != 0) {
+            if (ObfEnv.config.isIgnorePublic()) {
+                return super.visitMethod(access, name, desc, signature, exceptions);
+            }
+        }
+
+        if (name.equals("<init>") || name.equals("<clinit>")) {
+            mv = super.visitMethod(access, name, desc, signature, exceptions);
+        } else {
+            MethodReference.Handle m = ObfEnv.methodNameObfMapping.get(new MethodReference.Handle(
+                    new ClassReference.Handle(owner),
+                    name,
+                    desc
+            ));
+            if (ObfEnv.config.isEnableHideMethod()) {
+                access = access | Opcodes.ACC_SYNTHETIC;
+            }
+            if (m == null) {
+                mv = super.visitMethod(access, name, desc, signature, exceptions);
+                return new MethodNameChangerMethodAdapter(mv);
+            } else {
+                mv = super.visitMethod(access, m.getName(), m.getDesc(), signature, exceptions);
+                return new MethodNameChangerMethodAdapter(mv);
+            }
+        }
+        return new MethodNameChangerMethodAdapter(mv);
     }
 
     @Override
@@ -92,15 +142,22 @@ public class ParameterChanger extends ClassVisitor {
         return super.getDelegate();
     }
 
-    static class ParameterChangerMethodAdapter extends MethodVisitor {
-        private final HashSet<String> obfNames = new HashSet<>();
-
-        ParameterChangerMethodAdapter(MethodVisitor mv) {
+    static class MethodNameChangerMethodAdapter extends MethodVisitor {
+        MethodNameChangerMethodAdapter(MethodVisitor mv) {
             super(Const.ASMVersion, mv);
         }
 
         @Override
         public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+            MethodReference.Handle m = ObfEnv.methodNameObfMapping.get(new MethodReference.Handle(
+                    new ClassReference.Handle(owner),
+                    name,
+                    descriptor
+            ));
+            if (m != null) {
+                super.visitMethodInsn(opcode, m.getClassReference().getName(), m.getName(), m.getDesc(), isInterface);
+                return;
+            }
             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
         }
 
@@ -196,7 +253,47 @@ public class ParameterChanger extends ClassVisitor {
 
         @Override
         public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
-            super.visitInvokeDynamicInsn(name, descriptor, bootstrapMethodHandle, bootstrapMethodArguments);
+            MethodReference.Handle m = ObfEnv.methodNameObfMapping.get(new MethodReference.Handle(
+                    new ClassReference.Handle(bootstrapMethodHandle.getOwner()),
+                    bootstrapMethodHandle.getName(),
+                    bootstrapMethodHandle.getDesc()
+            ));
+            Handle handle;
+            if (m != null) {
+                handle = new Handle(
+                        bootstrapMethodHandle.getTag(),
+                        m.getClassReference().getName(),
+                        m.getName(),
+                        m.getDesc(),
+                        bootstrapMethodHandle.isInterface());
+            } else {
+                handle = bootstrapMethodHandle;
+            }
+
+            for (int i = 0; i < bootstrapMethodArguments.length; i++) {
+                Object obj = bootstrapMethodArguments[i];
+                if (obj instanceof Handle) {
+                    Handle ho = (Handle) obj;
+                    MethodReference.Handle mo = ObfEnv.methodNameObfMapping.get(new MethodReference.Handle(
+                            new ClassReference.Handle(ho.getOwner()),
+                            ho.getName(),
+                            ho.getDesc()
+                    ));
+                    Handle tempHandle;
+                    if (mo != null) {
+                        tempHandle = new Handle(
+                                ho.getTag(),
+                                mo.getClassReference().getName(),
+                                mo.getName(),
+                                mo.getDesc(),
+                                ho.isInterface());
+                    } else {
+                        tempHandle = ho;
+                    }
+                    bootstrapMethodArguments[i] = tempHandle;
+                }
+            }
+            super.visitInvokeDynamicInsn(name, descriptor, handle, bootstrapMethodArguments);
         }
 
         @Override
@@ -221,11 +318,6 @@ public class ParameterChanger extends ClassVisitor {
 
         @Override
         public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
-            if (name.equals("this") || name.equals("super")) {
-                super.visitLocalVariable(name, descriptor, signature, start, end, index);
-                return;
-            }
-            name = NameUtil.genWithSet(obfNames);
             super.visitLocalVariable(name, descriptor, signature, start, end, index);
         }
 
