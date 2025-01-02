@@ -272,15 +272,16 @@ public class Runner {
                     Path packDir = Files.createDirectory(baseDir.resolve(packageName));
                     Path classFile = packDir.resolve(String.format("%s.class", className));
                     Files.write(classFile, result);
+                } else {
+                    String[] dirs = packageName.split("\\.");
+                    Path packDir = baseDir;
+                    for (String dir : dirs) {
+                        packDir = Files.createDirectory(packDir.resolve(dir));
+                    }
+                    Path classFile = packDir.resolve(String.format("%s.class", className));
+                    Files.write(classFile, result);
                 }
 
-                String[] dirs = packageName.split("\\.");
-                Path packDir = baseDir;
-                for (String dir : dirs) {
-                    packDir = Files.createDirectory(packDir.resolve(dir));
-                }
-                Path classFile = packDir.resolve(String.format("%s.class", className));
-                Files.write(classFile, result);
                 logger.info("create dir {} and class {} finish", packageName, className);
             } catch (Exception ex) {
                 logger.error("create class output error: {}", ex.getMessage());
