@@ -2,6 +2,10 @@
 
 ## 1.3.2
 
+新增参数 `--std-output` 导出到标准路径方便后续处理
+
+例如 `me.n1ar4.Test` 将会导出 `class-obf-output/me/n1ar4/Test.class` 文件
+
 更新日志：
 
 - [功能] 支持 `--std-output` 参数输出到包名对应的完整路径

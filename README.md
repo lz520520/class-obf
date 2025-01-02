@@ -151,6 +151,12 @@ if (result.getMessage().equals(Result.SUCCESS)) {
 }
 ```
 
+如果你不想输出一大堆调试信息，可以这样设置
+
+```java
+config.setQuiet(true);
+```
+
 **注意：由于设计原因，以上代码不支持并发**
 
 ## 配置文件

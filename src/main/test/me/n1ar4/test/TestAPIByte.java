@@ -11,6 +11,7 @@ import java.util.Base64;
 public class TestAPIByte {
     public static void main(String[] args) throws Exception {
         BaseConfig config = BaseConfig.Default();
+        config.setQuiet(true);
         ClassObf classObf = new ClassObf(config);
         Result result = classObf.run(Files.readAllBytes(Paths.get("target/test-classes/me/n1ar4/test/TestAPI.class")));
         if (result.getMessage().equals(Result.SUCCESS)) {
