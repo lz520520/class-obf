@@ -7,7 +7,7 @@ public class ASMUtil {
         String className = classReader.getClassName();
         int lastSlashIndex = className.lastIndexOf('/');
         if (lastSlashIndex != -1) {
-            return className.substring(lastSlashIndex+1)
+            return className.substring(lastSlashIndex + 1)
                     .replace('/', '.');
         }
         return "";
