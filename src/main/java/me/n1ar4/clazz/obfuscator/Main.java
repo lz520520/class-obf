@@ -67,6 +67,6 @@ public class Main {
         }
 
         logger.info("start class obfuscate");
-        Runner.run(path, config);
+        Runner.run(path, config, false, baseCmd);
     }
 }

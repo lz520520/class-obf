@@ -12,6 +12,8 @@ public class BaseCmd {
     private boolean generate;
     @Parameter(names = {"-v", "--version"}, description = "version")
     private boolean version;
+    @Parameter(names = {"--std-output"}, description = "standard output (export file to package dir)")
+    private boolean stdOutput;
 
     public boolean isVersion() {
         return version;
@@ -43,5 +45,13 @@ public class BaseCmd {
 
     public void setConfig(String config) {
         this.config = config;
+    }
+
+    public boolean isStdOutput() {
+        return stdOutput;
+    }
+
+    public void setStdOutput(boolean stdOutput) {
+        this.stdOutput = stdOutput;
     }
 }

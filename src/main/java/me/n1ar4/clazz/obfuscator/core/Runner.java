@@ -5,13 +5,16 @@ import me.n1ar4.clazz.obfuscator.base.ClassField;
 import me.n1ar4.clazz.obfuscator.base.ClassFileEntity;
 import me.n1ar4.clazz.obfuscator.base.ClassReference;
 import me.n1ar4.clazz.obfuscator.base.MethodReference;
+import me.n1ar4.clazz.obfuscator.config.BaseCmd;
 import me.n1ar4.clazz.obfuscator.config.BaseConfig;
 import me.n1ar4.clazz.obfuscator.transform.*;
+import me.n1ar4.clazz.obfuscator.utils.ASMUtil;
 import me.n1ar4.clazz.obfuscator.utils.ColorUtil;
 import me.n1ar4.clazz.obfuscator.utils.FileUtil;
 import me.n1ar4.clazz.obfuscator.utils.NameUtil;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
+import org.objectweb.asm.ClassReader;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +35,7 @@ public class Runner {
         AnalyzeEnv.classFileList.add(cf);
     }
 
-    public static void run(Path path, BaseConfig config) {
+    public static void run(Path path, BaseConfig config, boolean isApi, BaseCmd cmd) {
         ObfEnv.config = config;
         if (!config.isQuiet()) {
             // 输出配置信息
@@ -243,16 +246,47 @@ public class Runner {
             System.out.println(
                     ColorUtil.blue("###################### ALL OBFUSCATE FINISH ######################"));
         }
+        boolean simpleOutput = cmd == null || !cmd.isStdOutput();
+        if (isApi || simpleOutput) {
+            try {
+                Files.write(Paths.get(newFile), Files.readAllBytes(Const.TEMP_PATH));
+                logger.info("class obfuscate finish and write new class file");
+            } catch (Exception ignored) {
+            }
+            try {
+                Files.delete(Const.TEMP_PATH);
+                logger.info("class obfuscate finish and delete temp file");
+            } catch (Exception ignored) {
+            }
+        } else {
+            // 标准输出
+            try {
+                byte[] result = Files.readAllBytes(Const.TEMP_PATH);
+                ClassReader classReader = new ClassReader(result);
+                String packageName = ASMUtil.getPackageName(classReader);
+                String className = ASMUtil.getClassName(classReader);
 
-        try {
-            Files.write(Paths.get(newFile), Files.readAllBytes(Const.TEMP_PATH));
-            logger.info("class obfuscate finish and write new class file");
-        } catch (Exception ignored) {
-        }
-        try {
-            Files.delete(Const.TEMP_PATH);
-            logger.info("class obfuscate finish and delete temp file");
-        } catch (Exception ignored) {
+                Path baseDir = Files.createDirectory(Paths.get("class-obf-output"));
+
+                if (!packageName.contains(".")) {
+                    Path packDir = Files.createDirectory(baseDir.resolve(packageName));
+                    Path classFile = packDir.resolve(String.format("%s.class", className));
+                    Files.write(classFile, result);
+                }
+
+                String[] dirs = packageName.split("\\.");
+                Path packDir = baseDir;
+                for (String dir : dirs) {
+                    packDir = Files.createDirectory(packDir.resolve(dir));
+                }
+                Path classFile = packDir.resolve(String.format("%s.class", className));
+                Files.write(classFile, result);
+                logger.info("create dir {} and class {} finish", packageName, className);
+            } catch (Exception ex) {
+                logger.error("create class output error: {}", ex.getMessage());
+                logger.info("please delete the class-obf-output dir");
+                logger.info("可能是目标文件或目录已存在：请删除 class-obf-output 目录");
+            }
         }
     }
 }

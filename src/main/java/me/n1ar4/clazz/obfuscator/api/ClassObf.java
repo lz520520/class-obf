@@ -63,7 +63,7 @@ public class ClassObf {
         try {
             clean();
             Manager.initConfig(this.config);
-            Runner.run(path, this.config);
+            Runner.run(path, this.config, true, null);
             String fileName = FileUtil.getFileNameWithoutExt(path);
             String newFile = fileName + "_obf.class";
             Path newFilePath = Paths.get(newFile);
