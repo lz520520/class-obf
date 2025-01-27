@@ -128,7 +128,7 @@ public class Test {
     <dependency>
         <groupId>com.github.jar-analyzer</groupId>
         <artifactId>class-obf</artifactId>
-        <version>1.3.2</version>
+        <version>1.4.0</version>
     </dependency>
 </dependencies>
 ```

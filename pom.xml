@@ -6,7 +6,7 @@
 
     <groupId>me.n1ar4</groupId>
     <artifactId>class-obf</artifactId>
-    <version>1.3.2</version>
+    <version>1.4.0</version>
 
     <packaging>jar</packaging>
     <description>Class Obfuscator Project</description>
