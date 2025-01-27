@@ -200,6 +200,12 @@ public class Runner {
             System.out.println(
                     ColorUtil.blue("#################################################################"));
         }
+
+        if (config.isEnableReflect()) {
+            ReflectTransformer.transform();
+            logger.info("run reflect transformer finish");
+        }
+
         if (config.isEnableDeleteCompileInfo()) {
             DeleteInfoTransformer.transform();
             logger.info("run delete info transformer finish");

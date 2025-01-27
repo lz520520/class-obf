@@ -1,12 +1,28 @@
 # CHANGELOG
 
-## 1.3.3
+## 1.4.0
 
-todo
+支持将 `INVOKE*` 指令转为反射调用，结合其他配置可完成进阶混淆
+
+```yaml
+# 是否将 JVM INVOKE 指令改成反射调用
+# 注意：该功能会明显影响执行效率
+# 优点：经过该混淆后会更加难以分析
+# 缺点：该功能未经过完善测试不稳定
+enableReflect: false
+# INVOKEVIRTUAL 转换
+enableReflectVirtual: false
+# INVOKESTATIC 转换
+enableReflectStatic: false
+# INVOKESPECIAL 转换
+enableReflectSpecial: false
+# INVOKEINTERFACE 转换
+enableReflectInterface: false
+```
 
 更新日志：
 
-- todo
+- [重要] 支持方法调用 `INVOKE` 指令改反射调用混淆
 
 感谢以下用户的贡献:
 

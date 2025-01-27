@@ -29,6 +29,10 @@
 
 ![](img/006.png)
 
+从 `1.4.0` 版本开始支持将 `INVOKE` 指令转为反射结合其他混淆方式隐藏特征
+
+![](img/008.png)
+
 ## 背景
 
 `jar-analyzer` 系列曾有一款工具 `jar-obfuscator` 实现 `jar` 包的混淆
@@ -232,6 +236,63 @@ enableHideField: false
 # 可以防止大部分 IDEA 版本反编译
 enableHideMethod: false
 
+# 是否将 JVM INVOKE 指令改成反射调用
+# 注意：该功能会明显影响执行效率
+# 优点：经过该混淆后会更加难以分析
+# 缺点：该功能未经过完善测试不稳定
+enableReflect: false
+# INVOKEVIRTUAL 转换
+enableReflectVirtual: false
+# INVOKESTATIC 转换
+enableReflectStatic: false
+# INVOKESPECIAL 转换
+enableReflectSpecial: false
+# INVOKEINTERFACE 转换
+enableReflectInterface: false
+
+```
+
+## test
+
+如何测试你混淆后的单个 `class` 可用？
+
+- 结合具体场景和项目测试，取决于实际情况
+- 覆盖到 `jar` 文件中测试，比较麻烦
+- 放到对应目录中使用 `java` 命令测试，更麻烦
+- 使用自定义 `ClassLoader` 测试，方便快速
+
+```java
+public class Test extends ClassLoader {
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        byte[] classData = getClassData(name);
+        if (classData == null) {
+            throw new ClassNotFoundException(name);
+        }
+        return defineClass(name, classData, 0, classData.length);
+    }
+
+    private byte[] getClassData(String className) {
+        if ("test.ClassName".equals(className)) {
+            try {
+                // read bytes form obfuscated class
+                return Files.readAllBytes(Paths.get("Test_obf.class"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) throws Exception {
+        TestRunner loader = new TestRunner();
+        Class<?> clazz = loader.loadClass("test.ClassName");
+        Object instance = clazz.getDeclaredConstructor().newInstance();
+        // usually main method
+        Method method = clazz.getMethod("main", String[].class);
+        method.invoke(instance, new Object[]{args});
+    }
+}
 ```
 
 ## Thanks
