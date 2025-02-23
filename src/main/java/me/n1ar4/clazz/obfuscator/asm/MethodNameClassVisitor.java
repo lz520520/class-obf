@@ -5,6 +5,7 @@ import me.n1ar4.clazz.obfuscator.base.ClassReference;
 import me.n1ar4.clazz.obfuscator.base.MethodReference;
 import me.n1ar4.clazz.obfuscator.core.AnalyzeEnv;
 import me.n1ar4.clazz.obfuscator.core.ObfEnv;
+import me.n1ar4.clazz.obfuscator.utils.ReflectHelp;
 import org.objectweb.asm.*;
 
 import java.util.ArrayList;
@@ -32,21 +33,32 @@ public class MethodNameClassVisitor extends ClassVisitor {
         }
         super.visit(version, access, name, signature, superName, interfaces);
     }
+    static void hideMethod(MethodVisitor mv) {
+        int currentLocals = 0;
+        try {
+            Object curr = ReflectHelp.getFieldValue(mv, "currentLocals");
+            // currentLocals默认是比当前参数大1，参数没对齐，反编译则会编译失败。
+            currentLocals = Integer.parseInt(curr.toString());
+            if (currentLocals < 0) {
+                currentLocals = 0;
+            }
+        }catch (Exception e) {
+        }
+        mv.visitAttribute(new SyntheticAttribute());
+        mv.visitAttribute(new MethodParameterAttribute(currentLocals,5));
+    }
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        MethodVisitor mv;
 
+        MethodVisitor mv = null;
         for (MethodReference mr : ignoreMethods) {
             if (mr.getName().equals(name) && mr.getDesc().equals(desc)) {
-                return super.visitMethod(access, name, desc, signature, exceptions);
-            }
-        }
-
-        // 2024/12/19 允许跳过 public 方法
-        if ((access & Opcodes.ACC_PUBLIC) != 0) {
-            if (ObfEnv.config.isIgnorePublic()) {
-                return super.visitMethod(access, name, desc, signature, exceptions);
+                mv = super.visitMethod(access, name, desc, signature, exceptions);
+                if (ObfEnv.config.isEnableHideMethod()) {
+                    hideMethod(mv);
+                }
+                return mv;
             }
         }
 
@@ -63,84 +75,17 @@ public class MethodNameClassVisitor extends ClassVisitor {
             }
             if (m == null) {
                 mv = super.visitMethod(access, name, desc, signature, exceptions);
-                return new MethodNameChangerMethodAdapter(mv);
             } else {
                 mv = super.visitMethod(access, m.getName(), m.getDesc(), signature, exceptions);
-                return new MethodNameChangerMethodAdapter(mv);
             }
         }
-        return new MethodNameChangerMethodAdapter(mv);
+        mv =  new MethodNameChangerMethodAdapter(mv);
+        if (ObfEnv.config.isEnableHideMethod()) {
+            hideMethod(mv);
+        }
+        return mv;
     }
 
-    @Override
-    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-        return super.visitAnnotation(descriptor, visible);
-    }
-
-    @Override
-    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
-        return super.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
-    }
-
-    @Override
-    public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-        return super.visitField(access, name, descriptor, signature, value);
-    }
-
-    @Override
-    public ModuleVisitor visitModule(String name, int access, String version) {
-        return super.visitModule(name, access, version);
-    }
-
-    @Override
-    public RecordComponentVisitor visitRecordComponent(String name, String descriptor, String signature) {
-        return super.visitRecordComponent(name, descriptor, signature);
-    }
-
-    @Override
-    public void visitAttribute(Attribute attribute) {
-        super.visitAttribute(attribute);
-    }
-
-    @Override
-    public void visitEnd() {
-        super.visitEnd();
-    }
-
-    @Override
-    public void visitInnerClass(String name, String outerName, String innerName, int access) {
-        super.visitInnerClass(name, outerName, innerName, access);
-    }
-
-    @Override
-    public void visitNestHost(String nestHost) {
-        super.visitNestHost(nestHost);
-    }
-
-    @Override
-    public void visitNestMember(String nestMember) {
-        super.visitNestMember(nestMember);
-    }
-
-    @Override
-    public void visitOuterClass(String owner, String name, String descriptor) {
-        super.visitOuterClass(owner, name, descriptor);
-    }
-
-    @Override
-    public void visitPermittedSubclass(String permittedSubclass) {
-        super.visitPermittedSubclass(permittedSubclass);
-    }
-
-    @Override
-    public void visitSource(String source, String debug) {
-        super.visitSource(source, debug);
-    }
-
-    @Override
-    public ClassVisitor getDelegate() {
-        return super.getDelegate();
-    }
 
     static class MethodNameChangerMethodAdapter extends MethodVisitor {
         MethodNameChangerMethodAdapter(MethodVisitor mv) {
@@ -160,97 +105,6 @@ public class MethodNameClassVisitor extends ClassVisitor {
             }
             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
         }
-
-        @Override
-        public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
-            super.visitFieldInsn(opcode, owner, name, descriptor);
-        }
-
-        @Override
-        public void visitTypeInsn(int opcode, String type) {
-            super.visitTypeInsn(opcode, type);
-        }
-
-        @Override
-        public void visitAttribute(Attribute attribute) {
-            super.visitAttribute(attribute);
-        }
-
-        @Override
-        public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
-            return super.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
-        }
-
-        @Override
-        public MethodVisitor getDelegate() {
-            return super.getDelegate();
-        }
-
-        @Override
-        public void visitEnd() {
-            super.visitEnd();
-        }
-
-        @Override
-        public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
-            return super.visitAnnotation(descriptor, visible);
-        }
-
-        @Override
-        public AnnotationVisitor visitAnnotationDefault() {
-            return super.visitAnnotationDefault();
-        }
-
-        @Override
-        public AnnotationVisitor visitInsnAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
-            return super.visitInsnAnnotation(typeRef, typePath, descriptor, visible);
-        }
-
-        @Override
-        public AnnotationVisitor visitLocalVariableAnnotation(int typeRef, TypePath typePath, Label[] start, Label[] end, int[] index, String descriptor, boolean visible) {
-            return super.visitLocalVariableAnnotation(typeRef, typePath, start, end, index, descriptor, visible);
-        }
-
-        @Override
-        public AnnotationVisitor visitParameterAnnotation(int parameter, String descriptor, boolean visible) {
-            return super.visitParameterAnnotation(parameter, descriptor, visible);
-        }
-
-        @Override
-        public AnnotationVisitor visitTryCatchAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
-            return super.visitTryCatchAnnotation(typeRef, typePath, descriptor, visible);
-        }
-
-        @Override
-        public void visitAnnotableParameterCount(int parameterCount, boolean visible) {
-            super.visitAnnotableParameterCount(parameterCount, visible);
-        }
-
-        @Override
-        public void visitCode() {
-            super.visitCode();
-        }
-
-        @Override
-        public void visitFrame(int type, int numLocal, Object[] local, int numStack, Object[] stack) {
-            super.visitFrame(type, numLocal, local, numStack, stack);
-        }
-
-        @Override
-        public void visitIincInsn(int varIndex, int increment) {
-            super.visitIincInsn(varIndex, increment);
-        }
-
-        @Override
-        public void visitInsn(int opcode) {
-            super.visitInsn(opcode);
-        }
-
-        @Override
-        public void visitIntInsn(int opcode, int operand) {
-            super.visitIntInsn(opcode, operand);
-        }
-
         @Override
         public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
             MethodReference.Handle m = ObfEnv.methodNameObfMapping.get(new MethodReference.Handle(
@@ -294,66 +148,6 @@ public class MethodNameClassVisitor extends ClassVisitor {
                 }
             }
             super.visitInvokeDynamicInsn(name, descriptor, handle, bootstrapMethodArguments);
-        }
-
-        @Override
-        public void visitJumpInsn(int opcode, Label label) {
-            super.visitJumpInsn(opcode, label);
-        }
-
-        @Override
-        public void visitLabel(Label label) {
-            super.visitLabel(label);
-        }
-
-        @Override
-        public void visitLdcInsn(Object value) {
-            super.visitLdcInsn(value);
-        }
-
-        @Override
-        public void visitLineNumber(int line, Label start) {
-            super.visitLineNumber(line, start);
-        }
-
-        @Override
-        public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
-            super.visitLocalVariable(name, descriptor, signature, start, end, index);
-        }
-
-        @Override
-        public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
-            super.visitLookupSwitchInsn(dflt, keys, labels);
-        }
-
-        @Override
-        public void visitMaxs(int maxStack, int maxLocals) {
-            super.visitMaxs(maxStack, maxLocals);
-        }
-
-        @Override
-        public void visitMultiANewArrayInsn(String descriptor, int numDimensions) {
-            super.visitMultiANewArrayInsn(descriptor, numDimensions);
-        }
-
-        @Override
-        public void visitParameter(String name, int access) {
-            super.visitParameter(name, access);
-        }
-
-        @Override
-        public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
-            super.visitTableSwitchInsn(min, max, dflt, labels);
-        }
-
-        @Override
-        public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
-            super.visitTryCatchBlock(start, end, handler, type);
-        }
-
-        @Override
-        public void visitVarInsn(int opcode, int varIndex) {
-            super.visitVarInsn(opcode, varIndex);
         }
     }
 }

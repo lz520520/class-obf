@@ -1,6 +1,7 @@
 package me.n1ar4.clazz.obfuscator.core;
 
 import me.n1ar4.clazz.obfuscator.Const;
+import me.n1ar4.clazz.obfuscator.asm.MethodNameClassVisitor;
 import me.n1ar4.clazz.obfuscator.base.ClassField;
 import me.n1ar4.clazz.obfuscator.base.ClassFileEntity;
 import me.n1ar4.clazz.obfuscator.base.ClassReference;
@@ -15,6 +16,7 @@ import me.n1ar4.clazz.obfuscator.utils.NameUtil;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -90,6 +92,7 @@ public class Runner {
         ClassReference.Handle key = entry.getKey();
         List<MethodReference> value = entry.getValue();
         String newClassName = key.getName();
+        outer:
         for (MethodReference mr : value) {
             String desc = mr.getDesc();
             String oldMethodName = mr.getName();
@@ -100,6 +103,23 @@ public class Runner {
                 logger.info("ignore method {}", oldMethodName);
                 continue;
             }
+            // 2024/12/19 允许跳过 public 方法
+            if ((mr.getAccess() & Opcodes.ACC_PUBLIC) != 0) {
+                if (ObfEnv.config.isIgnorePublic()) {
+                    continue;
+                }
+            }
+            for (String s : ObfEnv.config.getMethodBlackList()) {
+                if (s.equals(oldMethodName)) {
+                    continue outer;
+                }
+                Pattern pattern = Pattern.compile(s, Pattern.DOTALL);
+                Matcher matcher = pattern.matcher(oldMethodName);
+                if (matcher.matches()) {
+                    continue outer;
+                }
+            }
+
             MethodReference.Handle oldHandle = new MethodReference.Handle(
                     new ClassReference.Handle(newClassName),
                     oldMethodName, desc);
@@ -113,29 +133,31 @@ public class Runner {
         logger.info("build obfuscate method mapping finish");
 
         // 处理 method mapping 中的 black method 问题
-        Map<MethodReference.Handle, MethodReference.Handle>
-                methodNameObfMapping = new HashMap<>(ObfEnv.methodNameObfMapping);
-        for (Map.Entry<MethodReference.Handle, MethodReference.Handle> en : ObfEnv.methodNameObfMapping.entrySet()) {
-            String oldClassName = en.getKey().getName();
-            for (String s : ObfEnv.config.getMethodBlackList()) {
-                if (s.equals(oldClassName)) {
-                    methodNameObfMapping.remove(en.getKey());
-                    methodNameObfMapping.put(en.getKey(), en.getKey());
-                    break;
-                }
-                Pattern pattern = Pattern.compile(s, Pattern.DOTALL);
-                Matcher matcher = pattern.matcher(oldClassName);
-                if (matcher.matches()) {
-                    methodNameObfMapping.remove(en.getKey());
-                    methodNameObfMapping.put(en.getKey(), en.getKey());
-                    break;
-                }
-            }
-        }
-        ObfEnv.methodNameObfMapping.clear();
-        ObfEnv.methodNameObfMapping.putAll(methodNameObfMapping);
-        methodNameObfMapping.clear();
-        logger.info("method blacklist filter finish");
+//        Map<MethodReference.Handle, MethodReference.Handle>
+//                methodNameObfMapping = new HashMap<>(ObfEnv.methodNameObfMapping);
+//        for (Map.Entry<MethodReference.Handle, MethodReference.Handle> en : ObfEnv.methodNameObfMapping.entrySet()) {
+//            String oldClassName = en.getKey().getName();
+//            for (String s : ObfEnv.config.getMethodBlackList()) {
+//                if (s.equals(oldClassName)) {
+//                    methodNameObfMapping.remove(en.getKey());
+//                    methodNameObfMapping.put(en.getKey(), en.getKey());
+//                    logger.info("black method filter: {}", en.getKey().getName());
+//                    break;
+//                }
+//                Pattern pattern = Pattern.compile(s, Pattern.DOTALL);
+//                Matcher matcher = pattern.matcher(oldClassName);
+//                if (matcher.matches()) {
+//                    methodNameObfMapping.remove(en.getKey());
+//                    methodNameObfMapping.put(en.getKey(), en.getKey());
+//                    logger.info("black method filter: {}", en.getKey().getName());
+//                    break;
+//                }
+//            }
+//        }
+//        ObfEnv.methodNameObfMapping.clear();
+//        ObfEnv.methodNameObfMapping.putAll(methodNameObfMapping);
+//        methodNameObfMapping.clear();
+//        logger.info("method blacklist filter finish");
 
         // 处理 field name
         ClassReference c = AnalyzeEnv.discoveredClasses.iterator().next();

@@ -42,6 +42,7 @@ public class BaseConfig {
     private String aesKeyField;
     private String[] obfuscateChars;
     private String[] methodBlackList;
+    private String[] stringBlackList;
 
     /**
      * 如果配置没问题可以启动就返回 true
@@ -118,6 +119,7 @@ public class BaseConfig {
         config.setObfuscateChars(new String[]{"i", "l", "L", "1", "I"});
         config.setAdvanceStringName("iii");
         config.setMethodBlackList(new String[]{"main"});
+        config.setStringBlackList(new String[0]);
         // reflect 配置默认关闭
         config.setEnableReflect(false);
         config.setEnableReflectInterface(false);
@@ -137,6 +139,8 @@ public class BaseConfig {
                 ColorUtil.green(Arrays.toString(obfuscateChars)));
         System.out.println(ColorUtil.purple("[GLOBAL] Method Blacklist -> ") +
                 ColorUtil.green(Arrays.toString(methodBlackList)));
+        System.out.println(ColorUtil.purple("[GLOBAL] String Blacklist -> ") +
+                ColorUtil.green(Arrays.toString(stringBlackList)));
         System.out.println(ColorUtil.yellow("Enable Delete Compile Info Obfuscate -> ") +
                 ColorUtil.green(String.valueOf(enableDeleteCompileInfo)));
         System.out.println(ColorUtil.yellow("Enable Field Name Obfuscate -> ") +
@@ -259,9 +263,17 @@ public class BaseConfig {
         return methodBlackList != null ? methodBlackList : new String[0];
     }
 
+
     public void setMethodBlackList(String[] methodBlackList) {
         this.methodBlackList = methodBlackList;
     }
+    public String[] getStringBlackList() {
+        return stringBlackList != null ? stringBlackList : new String[0];
+    }
+    public void setStringBlackList(String[] blackList) {
+        this.stringBlackList = blackList;
+    }
+
 
     public String getAdvanceStringName() {
         return advanceStringName;

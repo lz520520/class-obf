@@ -3,6 +3,7 @@ package me.n1ar4.clazz.obfuscator.transform;
 import me.n1ar4.clazz.obfuscator.Const;
 import me.n1ar4.clazz.obfuscator.asm.MethodNameClassVisitor;
 import me.n1ar4.clazz.obfuscator.core.ObfEnv;
+import me.n1ar4.clazz.obfuscator.utils.LoadUtil;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
 import org.objectweb.asm.ClassReader;

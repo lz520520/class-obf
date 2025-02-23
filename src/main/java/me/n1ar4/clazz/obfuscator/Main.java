@@ -6,6 +6,7 @@ import me.n1ar4.clazz.obfuscator.config.BaseConfig;
 import me.n1ar4.clazz.obfuscator.config.Manager;
 import me.n1ar4.clazz.obfuscator.config.Parser;
 import me.n1ar4.clazz.obfuscator.core.Runner;
+import me.n1ar4.clazz.obfuscator.utils.LoadUtil;
 import me.n1ar4.log.LogManager;
 import me.n1ar4.log.Logger;
 
@@ -17,7 +18,7 @@ public class Main {
     private static final BaseCmd baseCmd = new BaseCmd();
     private static final Logger logger = LogManager.getLogger();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Logo.printLogo();
         Parser parser = new Parser();
         JCommander commander = JCommander.newBuilder()
@@ -67,6 +68,7 @@ public class Main {
         }
 
         logger.info("start class obfuscate");
+        LoadUtil.loadClassPath(path.getParent().toAbsolutePath().toString());
         Runner.run(path, config, false, baseCmd);
     }
 }

@@ -39,7 +39,7 @@ public class StringEncryptClassVisitor extends ClassVisitor {
 
     @Override
     public void visitEnd() {
-        AESUtil.addAesDecodeCode(cv, this.aesDecName);
+        AESUtil.addAesDecodeCode(cv,this.className, this.aesDecName);
         super.visitEnd();
     }
 
@@ -169,6 +169,12 @@ public class StringEncryptClassVisitor extends ClassVisitor {
         public void visitLdcInsn(Object value) {
             if (value instanceof String) {
                 try {
+                    for (String s : ObfEnv.config.getStringBlackList()) {
+                        if (!s.isEmpty() && s.equals(value)) {
+                            super.visitLdcInsn(value);
+                            return;
+                        }
+                    }
                     mv.visitLdcInsn(AESTemplates.encrypt((String) value, this.aesKey));
                     mv.visitFieldInsn(Opcodes.GETSTATIC, className,
                             ObfEnv.config.getAesKeyField(), "Ljava/lang/String;");

@@ -30,6 +30,11 @@ ignorePublic: false
 methodBlackList:
   - "main"
 
+# 全局字符串黑名单
+# 该字符串不会进行混淆
+stringBlackList:
+  - "{{test}}"
+
 # 是否开启字段混淆
 enableFieldName: true
 # 是否开启方法参数名混淆
